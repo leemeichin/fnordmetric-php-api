@@ -1,4 +1,5 @@
 <?php
+
   class FnordmetricApi {
     
     protected $socket;
@@ -9,22 +10,31 @@
       $this->host = $host;
       $this->port = $port;
     }
-
+  
+    /* close the socket connection when the class is no longer needed */
     public function __destruct() {
       $this->closeSocket();
     }
 
+    /* send an event to the fnordmetric server */
     public function event($name, Array $data = array()) {
-      $this->openSocket();
+      $data = $this->formatData($name, $data);
       $this->write($data);
     }
 
-    public function formatData($name, $data = array()) {
+    /* close the connection manually if necessary */
+    public function close() {
+      $this->closeSocket();
+    }
+
+    /* add the event name to the data array, and json encode the lot of it */
+    private function formatData($name, $data = array()) {
       $data['_type'] = $name;
       return json_encode($data);
     }
 
-    public function openSocket() {
+    /* open up a socket connection */
+    private function openSocket() {
       $this->socket = @socket_create(IF_ANET, SOCK_STREAM, SOL_TCP);
       if ($this->socket === false) throw new SocketConnectionErrorException;
 
@@ -36,7 +46,8 @@
       if ($server === false) throw new SocketConnectionErrorException;
     }
 
-    public function write($data) {
+    /* write the data to the socket */
+    private function write($data) {
       if (!$this->socketIsOpen()) $this->openSocket();
 
       $length = strlen($data);
@@ -51,13 +62,17 @@
       return true; // if something went wrong, there'd be an exception thrown
     }
 
-    public function socketIsOpen() {
+    /* check that the socket is open, but not necessarily connected  (if the var is true and is also a resource) */
+    private function socketIsOpen() {
       return (bool) $this->socket && is_resource($this->socket);
     }
 
-    public function closeSocket() {
+    /* close the socket connection and nullify it */
+    private function closeSocket() {
       if ($this->socketIsOpen()) {
         @socket_shutdown($this->socket, 2);
         socket_close($this->socket);
       }
+      $this->socket = null;
     }
+}
