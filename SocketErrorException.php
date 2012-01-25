@@ -1,6 +1,9 @@
 <?php
-
-class SocketConnectionErrorException extends Exception {
+/**
+ * Handles errors caused by socket connections, using the procedural-tastic socket error functions to
+ * find out what went wrong. Not really much else to it.
+ */
+class SocketErrorException extends Exception {
   
     public function __construct() {
       $this->error_number = socket_last_error();
