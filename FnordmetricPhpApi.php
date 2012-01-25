@@ -36,14 +36,14 @@
     /* open up a socket connection */
     private function openSocket() {
       $this->socket = @socket_create(IF_ANET, SOCK_STREAM, SOL_TCP);
-      if ($this->socket === false) throw new SocketConnectionErrorException;
+      if ($this->socket === false) throw new SocketErrorException;
 
       // add client connection to socket (ie. us)
       $client = @socket_bind($this->socket, '127.0.0.1');
-      if ($client === false) throw new SocketConnectionErrorException;
+      if ($client === false) throw new SocketErrorException;
 
       $server = @socket_connect($this->socket, $this->host, $this->port);
-      if ($server === false) throw new SocketConnectionErrorException;
+      if ($server === false) throw new SocketErrorException;
     }
 
     /* write the data to the socket */
@@ -55,7 +55,7 @@
 
       while ($offset < $length) {
         $sent_data = @socket_write($this->socket, substr($data, $offset), $length - $offset);
-        if ($sent_data === false) throw new SocketConnectionErrorException;
+        if ($sent_data === false) throw new SocketErrorException;
 
         $offset += $sent_data;
       }
