@@ -6,22 +6,22 @@ Fnordmetric PHP API uses TCP sockets to write new events to Fnordmetric. You don
 
 ## Usage
 
-    ```php
-    # Instantiate the class with your Fnordmetric instance's TCP IP and port (defaults to 0.0.0.0:1337)
-    $fnord = new FnordmetricApi('0.0.0.0', 1337);
+```php
+# Instantiate the class with your Fnordmetric instance's TCP IP and port (defaults to 0.0.0.0:1337)
+$fnord = new FnordmetricApi('0.0.0.0', 1337);
 
-    # Send a basic increment event
-    $fnord->event('unicorn_seen');
+# Send a basic increment event
+$fnord->event('unicorn_seen');
 
-    # Send a less basic event with extra data
-    $data = array(
-        'colour' => 'rainbow',
-        'name' => 'Luna'
-    );
+# Send a less basic event with extra data
+$data = array(
+    'colour' => 'rainbow',
+    'name' => 'Luna'
+);
 
-    $fnord->event('rare_unicorn_seen', $data);
+$fnord->event('rare_unicorn_seen', $data);
 
-    # If you'd rather not rely on the destructor to close the socket
-    $fnord->close(); 
-    ```
+# If you'd rather not rely on the destructor to close the socket
+$fnord->close(); 
+```    
 
