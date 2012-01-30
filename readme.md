@@ -22,6 +22,6 @@ $data = array(
 $fnord->event('rare_unicorn_seen', $data);
 
 # If you'd rather not rely on the destructor to close the socket
-$fnord->close(); 
-```    
+$fnord->close();
+```
 
