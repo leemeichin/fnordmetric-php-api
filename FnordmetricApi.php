@@ -30,20 +30,20 @@ class FnordmetricApi {
   /* add the event name to the data array, and json encode the lot of it */
   private function formatData($name, $data = array()) {
     $data['_type'] = $name;
-    return json_encode($data);
+    return json_encode($data)."\n";
   }
 
   /* open up a socket connection */
   private function openSocket() {
-    $this->socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-    if ($this->socket === false || $this->socket === null) throw new SocketErrorException;
+    $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+    if (!$this->socket) throw new SocketErrorException;
 
     // add client connection to socket (ie. us)
-    $client = @socket_bind($this->socket, '127.0.0.1');
-    if ($client === false || $client === null) throw new SocketErrorException;
+    $client = socket_bind($this->socket, '127.0.0.1');
+    if (!$client) throw new SocketErrorException;
 
-    $server = @socket_connect($this->socket, $this->host, $this->port);
-    if ($server === false || $server === null) throw new SocketErrorException;
+    $server = socket_connect($this->socket, $this->host, $this->port);
+    if (!$server) throw new SocketErrorException;
   }
 
   /* write the data to the socket */
@@ -55,10 +55,11 @@ class FnordmetricApi {
 
     while ($offset < $length) {
       $sent_data = socket_write($this->socket, substr($data, $offset), $length - $offset);
-      if ($sent_data === false) throw new SocketErrorException;
+      if (!$sent_data) throw new SocketErrorException;
 
       $offset += $sent_data;
     }
+
     return true; // if something went wrong, there'd be an exception thrown
   }
 
