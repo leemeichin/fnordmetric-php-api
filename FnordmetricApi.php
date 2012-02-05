@@ -1,4 +1,10 @@
 <?php
+/**
+ * Fnordmetric PHP API
+ * Simple class to send events to Fnordmetric
+ * TODO: Bit more documentation
+ * TODO: Support ipv6 maybe?
+ **/
 require_once __DIR__.'/SocketErrorException.php';
 class FnordmetricApi {
 
@@ -6,6 +12,7 @@ class FnordmetricApi {
   public    $host,
             $port;
 
+  /* store the host and port for future reference */
   public function __construct($host = '0.0.0.0', $port = 1337) {
     $this->host = $host;
     $this->port = $port;
@@ -35,6 +42,7 @@ class FnordmetricApi {
 
   /* open up a socket connection */
   private function openSocket() {
+    // create the TCP socket first
     $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
     if (!$this->socket) throw new SocketErrorException;
 
@@ -42,11 +50,15 @@ class FnordmetricApi {
     $client = socket_bind($this->socket, '127.0.0.1');
     if (!$client) throw new SocketErrorException;
 
+    // connect to the Fnordmetric server
     $server = socket_connect($this->socket, $this->host, $this->port);
     if (!$server) throw new SocketErrorException;
   }
 
-  /* write the data to the socket */
+  /*
+   * write the data to the socket
+   * adapted from http://www.php.net/manual/en/function.socket-write.php#101492
+  */
   private function write($data) {
     if (!$this->socketIsOpen()) $this->openSocket();
 
